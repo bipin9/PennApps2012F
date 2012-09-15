@@ -1,5 +1,7 @@
 package upenn.pennapps2012f;
 
+import java.util.Date;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,11 +23,11 @@ public class EventsDB {
 	
 	private final static String TABLE_NAME = "Future_Events_Table";
 	private final static String TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + 
-			"eventId integer AUTOINCREMENT," +
+			"eventId integer PRIMARY KEY AUTOINCREMENT," +
 			"eventName char(50) NOT NULL," +
 			"eventStartTime long NOT NULL," +
 			"eventEndTime long NOT NULL," +
-			"PRIMARY KEY (eventName, eventStartTime, eventEndTime)";
+			"UNIQUE(eventName, eventStartTime, eventEndTime) ON CONFLICT IGNORE)";
 
 	protected static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -73,34 +75,34 @@ public class EventsDB {
 	}
 	
 	// DEBUG ONLY
-	public void initializeTestData() {
-		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-		mDb.execSQL(TABLE_CREATE);
-
-		long curr = System.currentTimeMillis();
-		
-		ContentValues values = new ContentValues();
-		values.put("eventName", "TEST1");
-		values.put("eventStartTime", curr + 3000);
-		values.put("eventEndTime", curr + 6000);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-		
-
-		values = new ContentValues();
-		values.put("eventName", "TEST2");
-		values.put("eventStartTime", curr + 6000);
-		values.put("eventEndTime", curr + 10000);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-
-		values = new ContentValues();
-		values.put("eventName", "TEST3");
-		values.put("eventStartTime", curr + 10000);
-		values.put("eventEndTime", curr + 14000);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-	}
+//	public void initializeTestData() {
+//		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+//		mDb.execSQL(TABLE_CREATE);
+//
+//		long curr = System.currentTimeMillis();
+//		
+//		ContentValues values = new ContentValues();
+//		values.put("eventName", "TEST1");
+//		values.put("eventStartTime", curr + 3000);
+//		values.put("eventEndTime", curr + 6000);
+//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+//			Log.w(TAG, "Failed to insert new course into table");
+//		
+//
+//		values = new ContentValues();
+//		values.put("eventName", "TEST2");
+//		values.put("eventStartTime", curr + 6000);
+//		values.put("eventEndTime", curr + 10000);
+//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+//			Log.w(TAG, "Failed to insert new course into table");
+//
+//		values = new ContentValues();
+//		values.put("eventName", "TEST3");
+//		values.put("eventStartTime", curr + 10000);
+//		values.put("eventEndTime", curr + 14000);
+//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+//			Log.w(TAG, "Failed to insert new course into table");
+//	}
 	
 	public void updateEntry(EventEntry[] newEntries) {
 		if (newEntries != null) {
@@ -111,6 +113,9 @@ public class EventsDB {
 	}
 
 	private void addEntry(EventEntry next) {
+		System.out.println("Adding event " + ((next.eventName == null) ? "null" : next.eventName) + " with beginning time " +
+				new Date(next.eventStartTime).toString() + " and end time " + new Date(next.eventEndTime).toString());
+		
 		ContentValues values = new ContentValues();
 		values.put("eventName", next.eventName);
 		values.put("eventStartTime", next.eventStartTime);

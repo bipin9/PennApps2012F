@@ -20,7 +20,6 @@ import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,13 +56,13 @@ public class LoginActivity extends Activity {
 		}
 		
 		// TODO: move this to sync with gcal
-		EventsDB db = new EventsDB(this.getApplicationContext());
-		db.open();
-		db.initializeTestData();
-		db.close();
+//		EventsDB db = new EventsDB(this.getApplicationContext());
+//		db.open();
+//		db.initializeTestData();
+//		db.close();
 		
-		Alarm alarm = new Alarm();
-		alarm.setAlarm(this.getApplicationContext());
+		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
+		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
 	}
 
 	@Override
