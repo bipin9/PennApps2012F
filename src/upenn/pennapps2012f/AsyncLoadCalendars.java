@@ -1,7 +1,5 @@
 package upenn.pennapps2012f;
 
-import java.util.Date;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +8,7 @@ import android.provider.CalendarContract;
 import android.text.format.Time;
 
 public class AsyncLoadCalendars extends AsyncTask<ContentResolver, Void, Void> {
+	
 	private Cursor mCursor = null;
 	private static final String[] COLS = new String[] { CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
 	private Context context;
@@ -20,6 +19,7 @@ public class AsyncLoadCalendars extends AsyncTask<ContentResolver, Void, Void> {
 	
 	@Override
 	protected Void doInBackground(ContentResolver... args) {
+		System.out.println("Starting async load for calendar events");
 		String selection = "((" + CalendarContract.Events.DTSTART + " <= ?) AND (" + 
 				CalendarContract.Events.DTEND + " >= ?) AND (" + 
 				CalendarContract.Events.ALL_DAY + " = 0))";
@@ -31,7 +31,9 @@ public class AsyncLoadCalendars extends AsyncTask<ContentResolver, Void, Void> {
 		String[] selectionArgs = new String[] { dtEnd, dtStart};
 		
 		mCursor = args[0].query(CalendarContract.Events.CONTENT_URI, COLS, selection, selectionArgs, CalendarContract.Events.DTSTART);
-			
+
+		System.out.println("Query returned with " + mCursor.getCount() + " events");
+		
 		mCursor.moveToFirst();
 		EventEntry[] events = new EventEntry[mCursor.getCount()];
 		int count = 0;
@@ -55,7 +57,7 @@ public class AsyncLoadCalendars extends AsyncTask<ContentResolver, Void, Void> {
 	}
 
 	protected void onPostExecute(Void result) {
-		if (!Alarm.Running) {
+		if (((MyApplication)context.getApplicationContext()).getCurrent() == null) {
 			new Alarm().setAlarm(context);
 		}
 	}
