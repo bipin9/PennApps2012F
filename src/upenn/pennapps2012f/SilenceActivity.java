@@ -1,6 +1,7 @@
 package upenn.pennapps2012f;
 
 import android.app.Activity;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -19,8 +20,9 @@ import android.widget.ImageView;
  * @author hoconnie, jinyan, ckong
  *
  */
-public class SilenceActivity extends Activity implements OnClickListener {
+public class SilenceActivity extends Activity {
 	public boolean DO_NOT_DISTURB = false;
+	private AnimationDrawable signAnimation;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,15 +34,39 @@ public class SilenceActivity extends Activity implements OnClickListener {
 
 		// Set sign based on if on silence mode or not
 		ImageView signView = (ImageView) findViewById(R.id.silenceSign);
+
 		if (DO_NOT_DISTURB) {
 			// Show do not disturb
-			signView.setImageResource(R.drawable.silence_donotdisturb);
+			signView.setBackgroundResource(R.drawable.away_to_available_animation);
 		} else {
 			// Show available
-			signView.setImageResource(R.drawable.silence_available);
+			signView.setBackgroundResource(R.drawable.available_to_away_animation);
 		}
+		signAnimation = (AnimationDrawable) signView.getBackground();
 
-		// Gesture detection (swipe)
+		// On click listener for tapping on sign
+		signView.setOnClickListener(new OnClickListener() {
+			// On silence sign click: switch to off if on and vice versa
+			@Override
+			public void onClick(View v) {
+				ImageView signView = (ImageView) findViewById(R.id.silenceSign);
+				if (DO_NOT_DISTURB) {
+					// Set to available
+					DO_NOT_DISTURB = false;
+					signView.setBackgroundResource(R.drawable.away_to_available_animation);
+					signAnimation = (AnimationDrawable) signView.getBackground();
+					signAnimation.start();
+				} else {
+					// Set to do not disturb
+					DO_NOT_DISTURB = true;
+					signView.setBackgroundResource(R.drawable.available_to_away_animation);
+					signAnimation = (AnimationDrawable) signView.getBackground();
+					signAnimation.start();
+				}
+			}
+		});
+
+		// Gesture detection for swiping sign
 		final GestureDetector gestureDetector;
 		View.OnTouchListener gestureListener;
 		gestureDetector = new GestureDetector(new MyGestureDetector());
@@ -49,22 +75,7 @@ public class SilenceActivity extends Activity implements OnClickListener {
 				return gestureDetector.onTouchEvent(event);
 			}
 		};
-		signView.setOnClickListener((android.view.View.OnClickListener) SilenceActivity.this); 
 		signView.setOnTouchListener(gestureListener);
-	}
-
-	// On silence sign click: switch to off if on and vice versa
-	public void onSilenceSignClick(View v) {
-		ImageView signView = (ImageView) findViewById(R.id.silenceSign);
-		if (DO_NOT_DISTURB) {
-			// Set to available
-			DO_NOT_DISTURB = false;
-			signView.setImageResource(R.drawable.silence_available);
-		} else {
-			// Set to do not disturb
-			DO_NOT_DISTURB = true;
-			signView.setImageResource(R.drawable.silence_donotdisturb);
-		}
 	}
 
 	// Gesture detection for swipes
@@ -73,7 +84,7 @@ public class SilenceActivity extends Activity implements OnClickListener {
 		final int SWIPE_MIN_DISTANCE = vc.getScaledTouchSlop();
 		final int SWIPE_THRESHOLD_VELOCITY = vc.getScaledMinimumFlingVelocity();
 		final int SWIPE_MAX_OFF_PATH = 250;
-		
+
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			try {
@@ -81,17 +92,14 @@ public class SilenceActivity extends Activity implements OnClickListener {
 					return false;
 				// right to left swipe
 				if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+					// right swipe
 				}  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+					// left swipe
 				}
 			} catch (Exception e) {
 				// nothing
 			}
 			return false;
 		}
-
-	}
-
-	public void onClick(View v) {
-		onSilenceSignClick(v);
 	}
 }

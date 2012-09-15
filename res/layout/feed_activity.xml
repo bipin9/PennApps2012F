@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/feed_header"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/feed_title" />
+
+        <TextView
+            android:id="@+id/feed_header_silencetime"
+            android:paddingLeft="20dp"
+            android:paddingTop="40dp"
+            android:text="You enjoyed silence from 3-4 today"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/feed_header_silenceevents"
+            android:text="while you were in MKTG 101 and CIS 120"
+            android:textColor="@android:color/white" />
+    </RelativeView>
+
+</LinearLayout>
