@@ -68,7 +68,6 @@ public class EventsDB {
 	 * @throws SQLException
 	 */
 	public EventsDB open() throws SQLException {
-		Log.w(TAG, "Opening CourseSearchCache");
 		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
 		
@@ -83,7 +82,6 @@ public class EventsDB {
 	 * Close all associated database tables
 	 */
 	public void close() {
-		Log.w(TAG, "Closing CourseSearchCache");
 		mDbHelper.close();
 	}
 	
