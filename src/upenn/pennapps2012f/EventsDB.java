@@ -80,7 +80,7 @@ public class EventsDB {
 		ContentValues values = new ContentValues();
 		values.put("eventName", "TEST1");
 		values.put("eventStartTime", curr + 3000);
-		values.put("eventEndTime", curr + 100000);
+		values.put("eventEndTime", curr + 6000);
 		if (mDb.insert(TABLE_NAME, null, values) == -1) 
 			Log.w(TAG, "Failed to insert new course into table");
 		
