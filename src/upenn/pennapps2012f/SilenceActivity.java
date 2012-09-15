@@ -35,6 +35,11 @@ public class SilenceActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Intent i = this.getIntent();
+		if (i.getBooleanExtra("GOTOFEED", false)) {
+			startActivity(new Intent(this, NewsFeedActivity.class));
+		}
+		
 		showNotification();
 		
 		EventsDB db = new EventsDB(this.getApplicationContext());
@@ -110,7 +115,9 @@ public class SilenceActivity extends Activity {
 		Context context = getApplicationContext();
 		CharSequence contentTitle = "TITLE_TEXT?";
 		CharSequence contentText = "CONTENT_TEXT?";
-		Intent notificationIntent = new Intent(this, NewsFeedActivity.class);
+		Intent notificationIntent = new Intent(this, SilenceActivity.class);
+		notificationIntent.putExtra("GOTOFEED", true);
+		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
