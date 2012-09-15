@@ -11,6 +11,8 @@ import android.os.PowerManager;
 
 public class Alarm extends BroadcastReceiver {    
 	
+	public static boolean Running = false;
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {   
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -36,7 +38,7 @@ public class Alarm extends BroadcastReceiver {
         wl.release();
     }
 
-    public void setAlarm(Context context) {    	
+    public void setAlarm(Context context) {
 	    // Get the next time
 	    EventsDB db = new EventsDB(context);
 	    db.open();
@@ -77,5 +79,5 @@ public class Alarm extends BroadcastReceiver {
 	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	    alarmManager.cancel(sender);
 	    sender.cancel();
-	} 
+	}
 }
