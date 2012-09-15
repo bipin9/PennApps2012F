@@ -6,6 +6,16 @@
     android:background="@drawable/silence_bg" >
 
     <ImageView
+        android:id="@+id/favorites_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:src="@drawable/silence_heart_icon" />
+
+    <ImageView
         android:id="@+id/silenceSign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="30dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingBottom="30dp" >
 
         <ImageView
             android:id="@+id/google_icon"

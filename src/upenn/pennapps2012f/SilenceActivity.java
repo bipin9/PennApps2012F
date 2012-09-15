@@ -82,6 +82,16 @@ public class SilenceActivity extends Activity {
 				}
 			}
 		});
+		
+		// On click listener for tapping on heart icon to go to settings
+		ImageView favIcon = (ImageView) findViewById(R.id.favorites_icon);
+		final Intent i = new Intent(this, SettingsActivity.class);
+		favIcon.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				startActivity(i);
+			}
+		});
 
 		// On click listener for tapping on fb icon to login with fb
 		ImageView fbIcon = (ImageView) findViewById(R.id.facebook_icon);

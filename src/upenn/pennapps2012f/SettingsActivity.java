@@ -22,7 +22,7 @@ public class SettingsActivity extends Activity {
 
 		// Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.silence_activity);
+		setContentView(R.layout.settings_activity);
 	}
 
 }
