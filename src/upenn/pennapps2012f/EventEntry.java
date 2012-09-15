@@ -12,6 +12,13 @@ public class EventEntry {
 	public EventEntry() {
 	}
 	
+	public EventEntry(String name, long start, long end)
+	{
+		eventName = name;
+		eventStartTime = start;
+		eventEndTime = end;
+	}
+	
 	public EventEntry(String toDeserialize) {
 		deserialize(toDeserialize);
 	}
