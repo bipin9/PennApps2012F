@@ -64,7 +64,7 @@ public class EventsDB {
 
 	/**
 	 * Open the SQLite database and get the associating tables (if they exist, else create them)
-	 * @return SearchCache with the database opened
+	 * @return 
 	 * @throws SQLException
 	 */
 	public EventsDB open() throws SQLException {
@@ -141,7 +141,7 @@ public class EventsDB {
 		// Get the most recent time
 		Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY eventStartTime LIMIT 1", null);
 		c.moveToFirst();
-		if (c.getCount() == 1) {
+		if (c.getCount() > 0) {
 			// Get the most recent entry
 			EventEntry entry = new EventEntry();
 			entry.id = c.getInt(c.getColumnIndex("eventId"));

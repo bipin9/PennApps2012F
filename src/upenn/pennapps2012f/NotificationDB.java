@@ -1,7 +1,9 @@
 package upenn.pennapps2012f;
 
-import upenn.pennapps2012f.EventsDB.DatabaseHelper;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -31,7 +33,11 @@ public class NotificationDB {
 			"eventStartTime long NOT NULL," +
 			"eventEndTime long NOT NULL)";
 	
-	private final static String 
+	// For Demo purposes
+	private final static String AUTHENTICATION_TABLE = "Authentication_Table";
+	private final static String AUTHENTICATION_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + AUTHENTICATION_TABLE + " (" +
+			"username char(100) NOT NULL," +
+			"password char(100) NOT NULL)";
 	
 	protected static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -43,6 +49,7 @@ public class NotificationDB {
         public void onCreate(SQLiteDatabase db) {
         	db.execSQL(NOTIFICATION_TABLE_CREATE);
         	db.execSQL(OCCURRED_EVENTS_TABLE_CREATE);
+        	db.execSQL(AUTHENTICATION_TABLE_CREATE);
         }
 
         @Override
@@ -51,7 +58,128 @@ public class NotificationDB {
                     + newVersion + ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + NOTIFICATION_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + OCCURRED_EVENTS_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + AUTHENTICATION_TABLE);
             onCreate(db);
         }
     }
+	
+	public NotificationDB(Context ctx) {
+		this.mCtx = ctx;
+	}
+	
+	/**
+	 * Open the SQLite database and get the associating tables (if they exist, else create them)
+	 * @return
+	 * @throws SQLException
+	 */
+	public NotificationDB open() throws SQLException {
+		mDbHelper = new DatabaseHelper(mCtx);
+		mDb = mDbHelper.getWritableDatabase();
+		
+		// Might be unnecessary, just in case the tables aren't instantiated
+    	mDb.execSQL(NOTIFICATION_TABLE_CREATE);
+    	mDb.execSQL(OCCURRED_EVENTS_TABLE_CREATE);
+    	mDb.execSQL(AUTHENTICATION_TABLE_CREATE);
+		
+		return this;
+	}
+
+	/**
+	 * Close all associated database tables
+	 */
+	public void close() {
+		mDbHelper.close();
+	}
+	
+	public void addAuthentication(String name, String pw) {
+		ContentValues values = new ContentValues();
+		values.put("username", name);
+		values.put("password", pw);
+		
+		mDb.insert(AUTHENTICATION_TABLE, null, values);
+	}
+	
+	// return[0] is name, return[1] is pw
+	public String[] getAuthentication() {
+		Cursor c = mDb.rawQuery("SELECT * FROM " + AUTHENTICATION_TABLE, null);
+		c.moveToFirst();
+		
+		if (c.getCount() > 0) {
+			String[] result = new String[2];
+			result[0] = c.getString(c.getColumnIndex("username"));
+			result[1] = c.getString(c.getColumnIndex("password"));
+			return result;
+		}
+		return null;
+	}
+
+	public void addOccurredEvent(EventEntry entry) {
+		ContentValues values = new ContentValues();
+		values.put("eventName", entry.eventName);
+		values.put("eventStartTime", entry.eventStartTime);
+		values.put("eventEndTime", entry.eventEndTime);
+		
+		mDb.insert(OCCURRED_EVENTS_TABLE, null, values);
+	}
+	
+	public EventEntry[] getOccurredEvents() {
+		Cursor c = mDb.rawQuery("SELECT * FROM " + OCCURRED_EVENTS_TABLE, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			EventEntry[] result = new EventEntry[c.getCount()];
+			int index = 0;
+			do {
+				EventEntry entry = new EventEntry();
+				entry.eventName = c.getString(c.getColumnIndex("eventName"));
+				entry.eventStartTime = c.getLong(c.getColumnIndex("eventStartTime"));
+				entry.eventEndTime = c.getLong(c.getColumnIndex("eventEndTime"));
+				
+				result[index++] = entry;
+			} while (c.moveToNext());
+			
+			return result;
+		}
+		return null;
+	}
+	
+	public void resetOccurredEvents() {
+		mDb.delete(OCCURRED_EVENTS_TABLE, null, null);
+	}
+	
+	public void addNotification(Notification n) {
+		ContentValues values = new ContentValues();
+		values.put("notificationType", n.type);
+		values.put("notificationMessage", n.message);
+		values.put("notificationTime", n.time);
+		values.put("notificationSender", n.sender);
+		
+		mDb.insert(NOTIFICATION_TABLE, null, values);
+	}
+	
+	public Notification[] getAllNotifications() {
+		Cursor c = mDb.rawQuery("SELECT * FROM " + NOTIFICATION_TABLE, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			Notification[] result = new Notification[c.getCount()];
+			int index = 0;
+			do {
+				Notification n = new Notification();
+				n.id = c.getInt(c.getColumnIndex("notificationId"));
+				n.type = c.getInt(c.getColumnIndex("notificationType"));
+				n.message = c.getString(c.getColumnIndex("notificationMessage"));
+				n.time = c.getLong(c.getColumnIndex("notificationTime"));
+				n.sender = c.getString(c.getColumnIndex("notificationSender"));
+				
+				result[index++] = n;
+			} while (c.moveToNext());
+			
+			return result;
+		}
+		return null;
+	}
+	
+	public void deleteNotification(Notification n) {
+		
+	}
+	
 }
