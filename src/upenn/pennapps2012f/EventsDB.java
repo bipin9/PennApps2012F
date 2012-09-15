@@ -79,24 +79,24 @@ public class EventsDB {
 		
 		ContentValues values = new ContentValues();
 		values.put("eventName", "TEST1");
-		values.put("eventStartTime", curr + 10000);
-		values.put("eventEndTime", curr + 10000);
+		values.put("eventStartTime", curr + 3000);
+		values.put("eventEndTime", curr + 100000);
 		if (mDb.insert(TABLE_NAME, null, values) == -1) 
 			Log.w(TAG, "Failed to insert new course into table");
 		
 
 		values = new ContentValues();
 		values.put("eventName", "TEST2");
-		values.put("eventStartTime", curr + 20000);
-		values.put("eventEndTime", curr + 20000);
+		values.put("eventStartTime", curr + 6000);
+		values.put("eventEndTime", curr + 10000);
 		if (mDb.insert(TABLE_NAME, null, values) == -1) 
 			Log.w(TAG, "Failed to insert new course into table");
 		
 
 		values = new ContentValues();
 		values.put("eventName", "TEST3");
-		values.put("eventStartTime", curr + 30000);
-		values.put("eventEndTime", curr + 30000);
+		values.put("eventStartTime", curr + 10000);
+		values.put("eventEndTime", curr + 14000);
 		if (mDb.insert(TABLE_NAME, null, values) == -1) 
 			Log.w(TAG, "Failed to insert new course into table");
 	}

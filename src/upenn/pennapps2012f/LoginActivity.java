@@ -12,8 +12,6 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -22,6 +20,9 @@ import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -37,21 +38,32 @@ import android.widget.Toast;
 public class LoginActivity extends Activity {
 	private AccountManager manager;
 	private DefaultHttpClient http_client = new DefaultHttpClient();
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-
+		
 		// Get users Google account
 		Account account = getGoogleAccount();
 		if (account == null) {
 			// TODO Do something if the account retrieval failed
+			Log.wtf("gmail", "NO ACCOUNT");
 		}
-		Log.wtf("gmail", account.toString());
-		// Get auth token
-		manager.getAuthToken(account, "ah", false, new GetAuthTokenCallback(), null);
-
+		else {
+			Log.wtf("gmail", account.toString());
+			// Get auth token
+			manager.getAuthToken(account, "ah", false, new GetAuthTokenCallback(), null);
+		}
+		
+		// TODO: move this to sync with gcal
+		EventsDB db = new EventsDB(this.getApplicationContext());
+		db.open();
+		db.initializeTestData();
+		db.close();
+		
+		Alarm alarm = new Alarm();
+		alarm.setAlarm(this.getApplicationContext());
 	}
 
 	@Override
