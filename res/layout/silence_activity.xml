@@ -2,23 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/silence_bg"
     android:background="@drawable/silence_bg" >
-
-    <ImageView
-        android:id="@+id/rope"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
-        android:src="@drawable/silence_ropesmall" />
 
     <ImageView
         android:id="@+id/silenceSign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:onClick="onSilenceSignClick"
-        android:src="@drawable/silence_donotdisturb" />
+        android:layout_marginLeft="30dip"
+        android:layout_marginRight="30dip"
+        android:layout_marginTop="100dip"
+        android:layout_marginBottom="100dip" />
 
 </RelativeLayout>
