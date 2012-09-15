@@ -175,7 +175,7 @@ public class LoginActivity extends Activity {
 			}
 			return null;
 		}
-
+		
 		protected void onPostExecute(HttpResponse result) {
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(result.getEntity().getContent()));

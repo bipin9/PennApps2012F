@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/silence_bg" >
 
-    <TextView
-        android:id="@+id/textView1"
+    <ImageView
+        android:id="@+id/silenceSign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Silence Activity"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:onClick="onSilenceSignClick"
+        android:src="@drawable/silence_donotdisturb" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/rope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAlignBottom="true"
+        android:layout_alignBaseline="@id/silenceSign"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="65dp"
+        android:src="@drawable/silence_ropesmall" />
+
+</RelativeLayout>
