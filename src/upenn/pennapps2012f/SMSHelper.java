@@ -24,8 +24,8 @@ public class SMSHelper {
 	public void SendSMS(String smsNumber, EventEntry currentEvent) {
 		SmsManager smsManager = SmsManager.getDefault();
 
-		String smsText = accountName + ": cannot reply to this text right now because I am at: " +
-				currentEvent.eventName + " until " + new Date(currentEvent.eventEndTime).toString();
+		String smsText = accountName + ": I cannot reply to this text right now because I am at\n----\n" +
+				currentEvent.eventName + "\n----\nuntil " + new Date(currentEvent.eventEndTime).toString();
 	    smsManager.sendTextMessage(smsNumber, null, smsText, null, null);
 	}
 	

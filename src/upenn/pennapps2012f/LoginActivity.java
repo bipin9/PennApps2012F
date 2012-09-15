@@ -55,10 +55,10 @@ public class LoginActivity extends Activity {
 //		}
 		
 		// TODO: move this to sync with gcal
-//		EventsDB db = new EventsDB(this.getApplicationContext());
-//		db.open();
-//		db.initializeTestData();
-//		db.close();
+		EventsDB db = new EventsDB(this.getApplicationContext());
+		db.open();
+		db.initializeTestData();
+		db.close();
 		
 		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
 		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());

@@ -71,8 +71,11 @@ public class EventsDB {
 		Log.w(TAG, "Opening CourseSearchCache");
 		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
+		
+		// Might be unnecessary, just in case the tables aren't instantiated
 		mDb.execSQL(TABLE_CREATE);
 		mDb.execSQL(GLOBA_VAR_TABLE_CREATE);
+		
 		return this;
 	}
 
@@ -85,34 +88,34 @@ public class EventsDB {
 	}
 	
 	// DEBUG ONLY
-//	public void initializeTestData() {
-//		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-//		mDb.execSQL(TABLE_CREATE);
-//
-//		long curr = System.currentTimeMillis();
-//		
-//		ContentValues values = new ContentValues();
-//		values.put("eventName", "TEST1");
-//		values.put("eventStartTime", curr + 3000);
-//		values.put("eventEndTime", curr + 6000);
-//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-//			Log.w(TAG, "Failed to insert new course into table");
-//		
-//
-//		values = new ContentValues();
-//		values.put("eventName", "TEST2");
-//		values.put("eventStartTime", curr + 6000);
-//		values.put("eventEndTime", curr + 10000);
-//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-//			Log.w(TAG, "Failed to insert new course into table");
-//
-//		values = new ContentValues();
-//		values.put("eventName", "TEST3");
-//		values.put("eventStartTime", curr + 10000);
-//		values.put("eventEndTime", curr + 14000);
-//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-//			Log.w(TAG, "Failed to insert new course into table");
-//	}
+	public void initializeTestData() {
+		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+		mDb.execSQL(TABLE_CREATE);
+
+		long curr = System.currentTimeMillis();
+		
+		ContentValues values = new ContentValues();
+		values.put("eventName", "TEST1");
+		values.put("eventStartTime", curr + 1000);
+		values.put("eventEndTime", curr + 10000);
+		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+			Log.w(TAG, "Failed to insert new course into table");
+		
+
+		values = new ContentValues();
+		values.put("eventName", "TEST2");
+		values.put("eventStartTime", curr + 15000);
+		values.put("eventEndTime", curr + 20000);
+		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+			Log.w(TAG, "Failed to insert new course into table");
+
+		values = new ContentValues();
+		values.put("eventName", "TEST3");
+		values.put("eventStartTime", curr + 21000);
+		values.put("eventEndTime", curr + 100000);
+		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+			Log.w(TAG, "Failed to insert new course into table");
+	}
 	
 	public void updateEntry(EventEntry[] newEntries) {
 		if (newEntries != null) {
@@ -135,17 +138,10 @@ public class EventsDB {
 	
 	public EventEntry getNextEntry() {
 		// Remove any events that are passed the current time already
-		Cursor c = mDb.rawQuery("SELECT eventId FROM " + TABLE_NAME + " WHERE eventEndTime<" + System.currentTimeMillis(), null);
-		c.moveToFirst();
-		while (c.getCount() > 0) {
-			do {
-				int id = c.getInt(c.getColumnIndex("eventId"));
-				mDb.delete(TABLE_NAME, "eventId=" + id, null);
-			} while (c.moveToNext());
-		}
+		mDb.delete(TABLE_NAME, "eventEndTime<" + System.currentTimeMillis(), null);
 		
 		// Get the most recent time
-		c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY eventStartTime LIMIT 1", null);
+		Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY eventStartTime LIMIT 1", null);
 		c.moveToFirst();
 		if (c.getCount() == 1) {
 			// Get the most recent entry
@@ -180,6 +176,9 @@ public class EventsDB {
 	}
 	
 	public EventEntry getCurrentEntry() {
+		// Remove any events that are passed the current time already
+		mDb.delete(GLOBAL_VAR_TABLE_NAME, "eventEndTime<" + System.currentTimeMillis(), null);
+		
 		Cursor c = mDb.rawQuery("SELECT * FROM " + GLOBAL_VAR_TABLE_NAME, null);
 		c.moveToFirst();
 		
