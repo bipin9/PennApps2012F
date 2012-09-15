@@ -9,9 +9,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 
-public class Alarm extends BroadcastReceiver {    
-	
-	public static boolean Running = false;
+public class Alarm extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {   
@@ -22,16 +20,29 @@ public class Alarm extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
         String data = extras.getString("EventData");
         boolean occurred = extras.getBoolean("EventOccurred");
-        System.out.println("ALARM HAPPENED with data " + data);
+        System.out.println("ALARM HAPPENED with data " + data + " and occurred " + occurred);
         
         if (!occurred) {
         	// set timer for end time
         	((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_SILENT);
-        	setAlarmHelper(context, new EventEntry(data), false);
+        	EventEntry current = new EventEntry(data);
+        	
+        	EventsDB db = new EventsDB(context);
+        	db.open();
+        	db.setCurrentEntry(current);
+        	db.close();
+
+        	setAlarmHelper(context, current, false);
         }
         else {
         	// reset for next event
         	((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+        	
+        	EventsDB db = new EventsDB(context);
+        	db.open();
+        	db.setCurrentEntry(null);
+        	db.close();
+        	
         	setAlarm(context);
         }
         

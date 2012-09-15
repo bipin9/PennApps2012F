@@ -22,7 +22,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -44,22 +43,22 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		
 		// Get users Google account
-		Account account = getGoogleAccount();
-		if (account == null) {
-			// TODO Do something if the account retrieval failed
-			Log.wtf("gmail", "NO ACCOUNT");
-		}
-		else {
-			Log.wtf("gmail", account.toString());
-			// Get auth token
-			manager.getAuthToken(account, "ah", false, new GetAuthTokenCallback(), null);
-		}
+//		Account account = getGoogleAccount();
+//		if (account == null) {
+//			// TODO Do something if the account retrieval failed
+//			Log.wtf("gmail", "NO ACCOUNT");
+//		}
+//		else {
+//			Log.wtf("gmail", account.toString());
+//			// Get auth token
+//			manager.getAuthToken(account, "ah", false, new GetAuthTokenCallback(), null);
+//		}
 		
 		// TODO: move this to sync with gcal
-//		EventsDB db = new EventsDB(this.getApplicationContext());
-//		db.open();
-//		db.initializeTestData();
-//		db.close();
+		EventsDB db = new EventsDB(this.getApplicationContext());
+		db.open();
+		db.initializeTestData();
+		db.close();
 		
 		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
 		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
