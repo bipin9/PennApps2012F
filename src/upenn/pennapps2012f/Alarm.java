@@ -26,13 +26,23 @@ public class Alarm extends BroadcastReceiver {
         	// set timer for end time
         	((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_SILENT);
         	EventEntry current = new EventEntry(data);
-        	((MyApplication)context.getApplicationContext()).setCurrent(current);
+        	
+        	EventsDB db = new EventsDB(context);
+        	db.open();
+        	db.setCurrentEntry(current);
+        	db.close();
+
         	setAlarmHelper(context, current, false);
         }
         else {
         	// reset for next event
         	((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        	((MyApplication)context.getApplicationContext()).setCurrent(null);
+        	
+        	EventsDB db = new EventsDB(context);
+        	db.open();
+        	db.setCurrentEntry(null);
+        	db.close();
+        	
         	setAlarm(context);
         }
         

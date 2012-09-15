@@ -28,6 +28,13 @@ public class EventsDB {
 			"eventStartTime long NOT NULL," +
 			"eventEndTime long NOT NULL," +
 			"UNIQUE(eventName, eventStartTime, eventEndTime) ON CONFLICT IGNORE)";
+	
+	private final static String GLOBAL_VAR_TABLE_NAME = "GLOBAL_VARS";
+	private final static String GLOBA_VAR_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + GLOBAL_VAR_TABLE_NAME + " (" +
+			"eventId integer PRIMARY KEY AUTOINCREMENT," +
+			"eventName char(50) NOT NULL," +
+			"eventStartTime long NOT NULL," +
+			"eventEndTime long NOT NULL)";
 
 	protected static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -38,6 +45,7 @@ public class EventsDB {
         @Override
         public void onCreate(SQLiteDatabase db) {
         	db.execSQL(TABLE_CREATE);
+        	db.execSQL(GLOBA_VAR_TABLE_CREATE);
         }
 
         @Override
@@ -45,6 +53,7 @@ public class EventsDB {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + GLOBAL_VAR_TABLE_NAME);
             onCreate(db);
         }
     }
@@ -63,6 +72,7 @@ public class EventsDB {
 		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
 		mDb.execSQL(TABLE_CREATE);
+		mDb.execSQL(GLOBA_VAR_TABLE_CREATE);
 		return this;
 	}
 
@@ -150,6 +160,41 @@ public class EventsDB {
 			
 			return entry;
 		}
+		return null;
+	}
+	
+	public void setCurrentEntry(EventEntry entry) {
+		mDb.delete(GLOBAL_VAR_TABLE_NAME, null, null);
+		
+		System.out.println("Setting current entry to " + ((entry == null) ? "NULL" : entry.eventName));
+		
+		if (entry != null) {
+			ContentValues values = new ContentValues();
+			values.put("eventId", entry.id);
+			values.put("eventName", entry.eventName);
+			values.put("eventStartTime", entry.eventStartTime);
+			values.put("eventEndTime", entry.eventEndTime);
+			
+			mDb.insert(GLOBAL_VAR_TABLE_NAME, null, values);
+		}
+	}
+	
+	public EventEntry getCurrentEntry() {
+		Cursor c = mDb.rawQuery("SELECT * FROM " + GLOBAL_VAR_TABLE_NAME, null);
+		c.moveToFirst();
+		
+		if (c.getCount() == 1) {
+			EventEntry entry = new EventEntry();
+			entry.id = c.getInt(c.getColumnIndex("eventId"));
+			entry.eventName = c.getString(c.getColumnIndex("eventName"));
+			entry.eventStartTime = c.getLong(c.getColumnIndex("eventStartTime"));
+			entry.eventEndTime = c.getLong(c.getColumnIndex("eventEndTime"));
+			
+			System.out.println("Getting current entry: " + entry.eventName);
+			
+			return entry;
+		}
+		System.out.println("Getting current entry: NULL");
 		return null;
 	}
 }

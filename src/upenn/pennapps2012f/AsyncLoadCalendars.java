@@ -57,7 +57,12 @@ public class AsyncLoadCalendars extends AsyncTask<ContentResolver, Void, Void> {
 	}
 
 	protected void onPostExecute(Void result) {
-		if (((MyApplication)context.getApplicationContext()).getCurrent() == null) {
+    	EventsDB db = new EventsDB(context);
+    	db.open();
+    	EventEntry entry = db.getCurrentEntry();
+    	db.close();
+		
+		if (entry == null) {
 			new Alarm().setAlarm(context);
 		}
 	}

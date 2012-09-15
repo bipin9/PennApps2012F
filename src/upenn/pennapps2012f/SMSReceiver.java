@@ -17,8 +17,12 @@ public class SMSReceiver extends BroadcastReceiver {
 		for (int n = 0; n < messages.length; n++) {
 			smsMessage[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
 		}
+
+    	EventsDB db = new EventsDB(context);
+    	db.open();
+    	EventEntry entry = db.getCurrentEntry();
+    	db.close();
 		
-		EventEntry entry = ((MyApplication)context.getApplicationContext()).getCurrent();
 		String number = smsMessage[0].getOriginatingAddress();
 		System.out.println("Received message: " + smsMessage[0].getMessageBody() + " - SILENCE IS " + ((entry != null) ? "ON" : "OFF"));
 		if (entry != null && number != null) {
