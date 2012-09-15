@@ -17,14 +17,15 @@ public class Alarm extends BroadcastReceiver {
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
         wl.acquire();
 
-        System.out.println("ALARM HAPPENED");
         Bundle extras = intent.getExtras();
-        EventEntry entry = new EventEntry(extras.getString("EventData"));
-        boolean started = extras.getBoolean("EventStarted");
+        String data = extras.getString("EventData");
+        boolean occurred = extras.getBoolean("EventOccurred");
+        System.out.println("ALARM HAPPENED with data " + data);
         
-        if (started) {
+        if (!occurred) {
         	// set timer for end time
-        	setAlarmHelper(context, entry, true);
+        	((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        	setAlarmHelper(context, new EventEntry(data), false);
         }
         else {
         	// reset for next event
@@ -42,38 +43,39 @@ public class Alarm extends BroadcastReceiver {
 	    EventEntry entry = db.getNextEntry();
 	    db.close(); 
 
-	    setAlarmHelper(context, entry, false);
+	    setAlarmHelper(context, entry, true);
 	}
     
     private void setAlarmHelper(Context context, EventEntry entry, boolean useStart) {
+    	cancelAlarm(context);	// piece of shit code that made me loop for 4 hours, why wont alarm cancel itself -____- 
+    	
     	if (entry != null) {
 	    	AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-		    Intent i = new Intent(context, Alarm.class);
-		    i.putExtra("EventData", entry.serialize());
-		    i.putExtra("EventStarted", useStart);
-		    
-		    PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 	     
-		    System.out.println("SETTING ALARM FOR " + entry.eventName);
+		    System.out.println("SETTING ALARM FOR " + entry.eventName + " with USESTART " + useStart);
 		    
 		    if (useStart) {
-			    ((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_SILENT);
+			    Intent i = new Intent(context, Alarm.class);
+			    i.putExtra("EventData", entry.serialize());
+			    
+			    PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 			    am.set(AlarmManager.RTC_WAKEUP, entry.eventStartTime, pi);
 		    }
 		    else {
+			    Intent i = new Intent(context, Alarm.class);
+			    i.putExtra("EventOccurred", true);
+			    
+			    PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 			    am.set(AlarmManager.RTC_WAKEUP, entry.eventEndTime, pi);
 		    }
 	    }
     }
 	
-	public void cancelAlarm(Context context, boolean setNext) {
+	public void cancelAlarm(Context context) {
 	    Intent intent = new Intent(context, Alarm.class);
 	    PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
 	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	    alarmManager.cancel(sender);
-	    
-	    if (setNext) {
-	    	setAlarm(context);
-	    }
+	    sender.cancel();
 	} 
 }
