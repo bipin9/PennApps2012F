@@ -1,17 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/silence_bg"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/silence_bg"
     android:background="@drawable/silence_bg" >
+
+    <ImageView
+        android:id="@+id/favorites_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:src="@drawable/silence_heart_icon" />
 
     <ImageView
         android:id="@+id/silenceSign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="180dip"
         android:layout_marginLeft="30dip"
         android:layout_marginRight="30dip"
-        android:layout_marginTop="140dip"
-        android:layout_marginBottom="140dip" />
+        android:layout_marginTop="90dip" />
+
+    <LinearLayout
+        android:id="@+id/silence_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingBottom="30dp" >
+
+        <ImageView
+            android:id="@+id/google_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/silence_google_icon" />
+
+        <ImageView
+            android:id="@+id/facebook_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/silence_fb_icon" />
+
+        <ImageView
+            android:id="@+id/twitter_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/silence_twitter_icon" />
+    </LinearLayout>
 
 </RelativeLayout>

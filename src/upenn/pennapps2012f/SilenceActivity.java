@@ -27,7 +27,7 @@ import android.widget.ImageView;
  */
 public class SilenceActivity extends Activity {
 	public static final int SILENCE_ID = 100;
-	
+
 	public boolean DO_NOT_DISTURB = false;
 	private AnimationDrawable signAnimation;
 
@@ -41,15 +41,15 @@ public class SilenceActivity extends Activity {
 		}
 		
 		showNotification();
-		
+
 		EventsDB db = new EventsDB(this.getApplicationContext());
 		db.open();
 		db.initializeTestData();
 		db.close();
-		
+
 		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
 		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
-		
+
 		// Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.silence_activity);
@@ -87,6 +87,26 @@ public class SilenceActivity extends Activity {
 				}
 			}
 		});
+		
+		// On click listener for tapping on heart icon to go to settings
+		ImageView favIcon = (ImageView) findViewById(R.id.favorites_icon);
+		final Intent i = new Intent(this, SettingsActivity.class);
+		favIcon.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				startActivity(i);
+			}
+		});
+
+		// On click listener for tapping on fb icon to login with fb
+		ImageView fbIcon = (ImageView) findViewById(R.id.facebook_icon);
+		fbIcon.setOnClickListener(new OnClickListener() {
+			// TODO Charles
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
 
 		// Gesture detection for swiping sign
 		final GestureDetector gestureDetector;
@@ -99,19 +119,19 @@ public class SilenceActivity extends Activity {
 		};
 		signView.setOnTouchListener(gestureListener);
 	}
-	
+
 	private void showNotification() {
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		
+
 		int icon = R.drawable.feed_email;	// TODO CHANGE
 		CharSequence tickerText = "TICKER_TEXT?";
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, tickerText, when);
-		
+
 		notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR; 
-		
+
 		Context context = getApplicationContext();
 		CharSequence contentTitle = "TITLE_TEXT?";
 		CharSequence contentText = "CONTENT_TEXT?";
@@ -121,9 +141,9 @@ public class SilenceActivity extends Activity {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-		
+
 		System.out.println("Showing the notification");
-		
+
 		mNotificationManager.notify(SILENCE_ID, notification);
 	}
 
