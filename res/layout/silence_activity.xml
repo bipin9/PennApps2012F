@@ -5,24 +5,20 @@
     android:background="@drawable/silence_bg" >
 
     <ImageView
-        android:id="@+id/silenceSign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-        android:onClick="onSilenceSignClick"
-        android:src="@drawable/silence_donotdisturb" />
-
-    <ImageView
         android:id="@+id/rope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:baselineAlignBottom="true"
-        android:layout_alignBaseline="@id/silenceSign"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp"
         android:src="@drawable/silence_ropesmall" />
+
+    <ImageView
+        android:id="@+id/silenceSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:onClick="onSilenceSignClick"
+        android:src="@drawable/silence_donotdisturb" />
 
 </RelativeLayout>

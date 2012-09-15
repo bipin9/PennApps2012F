@@ -1,18 +1,15 @@
 package upenn.pennapps2012f;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.LayoutInflater.Filter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * Main activity that user interacts with.
@@ -70,6 +67,7 @@ public class SilenceActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	// Gesture detection for swipes
 	private class MyGestureDetector extends SimpleOnGestureListener {
 		final ViewConfiguration vc = ViewConfiguration.get(getApplicationContext());
 		final int SWIPE_MIN_DISTANCE = vc.getScaledTouchSlop();
