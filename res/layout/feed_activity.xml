@@ -4,28 +4,41 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <RelativeView
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
         <ImageView
             android:id="@+id/feed_header"
-            android:layout_width="fill_parent"
-            android:layout_height="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
             android:background="@drawable/feed_title" />
 
         <TextView
             android:id="@+id/feed_header_silencetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingLeft="20dp"
-            android:paddingTop="40dp"
+            android:paddingTop="35dp"
             android:text="You enjoyed silence from 3-4 today"
             android:textColor="@android:color/white"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/feed_header_silenceevents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/feed_header_silencetime"
+            android:paddingLeft="20dp"
             android:text="while you were in MKTG 101 and CIS 120"
-            android:textColor="@android:color/white" />
-    </RelativeView>
+            android:textColor="@android:color/white"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/feed_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
 </LinearLayout>
