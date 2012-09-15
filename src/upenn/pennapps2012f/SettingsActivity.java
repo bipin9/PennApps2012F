@@ -1,6 +1,8 @@
 package upenn.pennapps2012f;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.view.Window;
 
 /**
  * Settings activity that can be reached from icon
@@ -14,5 +16,13 @@ import android.app.Activity;
  */
 
 public class SettingsActivity extends Activity {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.silence_activity);
+	}
 
 }
