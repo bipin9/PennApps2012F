@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class EventsDB {
-
+	
 	private Context mCtx;
 
 	private DatabaseHelper mDbHelper;
@@ -21,10 +21,11 @@ public class EventsDB {
 	
 	private final static String TABLE_NAME = "Future_Events_Table";
 	private final static String TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + 
-			"eventId integer PRIMARY KEY AUTOINCREMENT," +
+			"eventId integer AUTOINCREMENT," +
 			"eventName char(50) NOT NULL," +
 			"eventStartTime long NOT NULL," +
-			"eventEndTime long NOT NULL)";
+			"eventEndTime long NOT NULL," +
+			"PRIMARY KEY (eventName, eventStartTime, eventEndTime)";
 
 	protected static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -71,6 +72,7 @@ public class EventsDB {
 		mDbHelper.close();
 	}
 	
+	// DEBUG ONLY
 	public void initializeTestData() {
 		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		mDb.execSQL(TABLE_CREATE);
@@ -91,7 +93,6 @@ public class EventsDB {
 		values.put("eventEndTime", curr + 10000);
 		if (mDb.insert(TABLE_NAME, null, values) == -1) 
 			Log.w(TAG, "Failed to insert new course into table");
-		
 
 		values = new ContentValues();
 		values.put("eventName", "TEST3");
@@ -100,15 +101,21 @@ public class EventsDB {
 		if (mDb.insert(TABLE_NAME, null, values) == -1) 
 			Log.w(TAG, "Failed to insert new course into table");
 	}
+	
+	public void updateEntry(EventEntry[] newEntries) {
+		if (newEntries != null) {
+			for (int i = 0; i < newEntries.length; i++) {
+				addEntry(newEntries[i]);
+			}
+		}
+	}
 
-	public void addEntry(EventEntry next) {
+	private void addEntry(EventEntry next) {
 		ContentValues values = new ContentValues();
 		values.put("eventName", next.eventName);
 		values.put("eventStartTime", next.eventStartTime);
 		values.put("eventEndTime", next.eventEndTime);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-		
+		mDb.insert(TABLE_NAME, null, values);
 	}
 	
 	public EventEntry getNextEntry() {
