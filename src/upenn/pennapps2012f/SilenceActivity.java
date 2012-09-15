@@ -35,8 +35,8 @@ public class SilenceActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Intent i = this.getIntent();
-		if (i.getBooleanExtra("GOTOFEED", false)) {
+		if (this.getIntent().getBooleanExtra("GOTOFEED", false)) {
+			this.getIntent().removeExtra("GOTOFEED");
 			startActivity(new Intent(this, NewsFeedActivity.class));
 		}
 		

@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -51,6 +48,5 @@ public class NewsFeedActivity extends Activity {
 		
 		// Set ArrayAdapter as ListView's adapter
 		listView.setAdapter(listAdapter);
-		
 	}
 }

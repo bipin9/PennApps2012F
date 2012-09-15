@@ -29,6 +29,9 @@ import android.widget.Toast;
  * Prompts user to log into their Google account
  * to sync with GCal and GMail.
  * User only sees this the first time the application is launched.
+ * '
+ * 
+ * !!!!!!!!!!!!!!!!!!!!!NOT BEING USED!!!!!!!!!!!!!!!!!!!
  * 
  * @author hoconnie, jinyan, ckong
  *
