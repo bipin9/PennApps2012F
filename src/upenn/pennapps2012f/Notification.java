@@ -14,6 +14,7 @@ public class Notification {
 	
 	public int id;
 	public int type;	// refer above
+	public String subject;
 	public String message;
 	public long time;
 	public String sender;
@@ -21,9 +22,9 @@ public class Notification {
 	public Notification() {
 	}
 	
-	public Notification(int _id, int _type, String _message, long _time, String _sender) {
-		id = _id;
+	public Notification(int _type, String _subject, String _message, long _time, String _sender) {
 		type = _type;
+		subject = _subject;
 		message = _message;
 		time = _time;
 		sender = _sender;
