@@ -27,6 +27,7 @@ public class NotificationDB {
 			"notificationMessage char(500)," +
 			"notificationTime long NOT NULL," + 
 			"notificationSender char(100) NOT NULL," +
+			"notificationURL char(200)," +
 			"UNIQUE(notificationType, notificationSubject, notificationMessage, notificationTime, notificationSender) ON CONFLICT IGNORE)";
 	
 	private final static String OCCURRED_EVENTS_TABLE = "Occurred_Events_Table";
@@ -147,6 +148,15 @@ public class NotificationDB {
 	public void resetOccurredEvents() {
 		mDb.delete(OCCURRED_EVENTS_TABLE, null, null);
 	}
+	
+	public long getFirstEventBeginningTime() {
+		Cursor c = mDb.rawQuery("SELECT eventStartTime FROM " + OCCURRED_EVENTS_TABLE + " ORDER BY eventStartTime LIMIT 1", null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			return c.getLong(c.getColumnIndex("eventStartTime"));
+		}
+		return 0;
+	}
 
 	public void addNotification(Notification[] n) {
 		for (int i = 0; i < n.length; i++) {
@@ -163,12 +173,13 @@ public class NotificationDB {
 		values.put("notificationMessage", n.message);
 		values.put("notificationTime", n.time);
 		values.put("notificationSender", n.sender);
+		values.put("notificationURL", n.link);
 		
 		mDb.insert(NOTIFICATION_TABLE, null, values);
 	}
 	
-	public Notification[] getAllNotifications() {
-		Cursor c = mDb.rawQuery("SELECT * FROM " + NOTIFICATION_TABLE + " ORDER BY notificationTime", null);
+	public Notification[] getAllNotifications(long time) {
+		Cursor c = mDb.rawQuery("SELECT * FROM " + NOTIFICATION_TABLE + " WHERE notificationTime > " + time + " ORDER BY notificationTime DESC", null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			Notification[] result = new Notification[c.getCount()];
@@ -181,6 +192,7 @@ public class NotificationDB {
 				n.message = c.getString(c.getColumnIndex("notificationMessage"));
 				n.time = c.getLong(c.getColumnIndex("notificationTime"));
 				n.sender = c.getString(c.getColumnIndex("notificationSender"));
+				n.link = c.getString(c.getColumnIndex("notificationURL"));
 				
 				result[index++] = n;
 			} while (c.moveToNext());
@@ -191,7 +203,7 @@ public class NotificationDB {
 	}
 	
 	public void deleteNotification(Notification n) {
-		
+		mDb.delete(NOTIFICATION_TABLE, "notificationId=" + n.id, null);
 	}
 	
 }

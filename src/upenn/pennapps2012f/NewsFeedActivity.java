@@ -1,6 +1,8 @@
 package upenn.pennapps2012f;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,7 +34,7 @@ public class NewsFeedActivity extends Activity {
 	private static final String logTag = "SwipeDetector";
 	
 	private ListView listView;
-	private ArrayAdapter<String> listAdapter;
+	private ArrayAdapter<Notification> adapter;
 
 	public static enum Action {
 		LR, // Left to Right
@@ -53,14 +55,15 @@ public class NewsFeedActivity extends Activity {
 		// Get all notifications
 		DataRetrieval data = new DataRetrieval(this.getApplicationContext());
 		data.getFacebookNotifications();
-		data.getMailNotifications("bobjoe380@gmail.com", "asdf4321asdf");
+		data.getMailNotifications("connie.yw.ho@gmail.com", "hackathon");
 		
 		// Get listView resource
 		listView = (ListView) findViewById(R.id.feed_list);
 
 		NotificationDB db = new NotificationDB(this.getApplicationContext());
 		db.open();
-		Notification[] result = db.getAllNotifications();
+		Notification[] result = db.getAllNotifications(db.getFirstEventBeginningTime());
+		db.resetOccurredEvents();
 		db.close();
 		
 		if (result != null) {
@@ -68,7 +71,12 @@ public class NewsFeedActivity extends Activity {
 
 			Log.w("NOTIFICATION", "Number of notification loaded is " + result.length);
 			
-			final ArrayAdapter<Notification> adapter = new ContractAdapter(this, R.layout.feed_row, n);
+			List<Notification> nlist = new ArrayList<Notification>();
+			for (int i = 0; i < result.length; i++) {
+				nlist.add(n[i]);
+			}
+			
+			adapter = new ContractAdapter(this, R.layout.feed_row, nlist);
 			listView.setAdapter(adapter);
 			
 			// Set swipe detection for removing stories from feed
@@ -78,17 +86,24 @@ public class NewsFeedActivity extends Activity {
 		        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		                if (swipeDetector.swipeDetected()){
 		                	Log.i(logTag, "swipe detected");
-		                	// TODO Jin remove from db
+
+		                	Notification notif = adapter.getItem(position);
+		                	NotificationDB db = new NotificationDB(NewsFeedActivity.this);
+		                	db.open();
+		                	db.deleteNotification(notif);
+		                	db.close();
+		                	
 		                    // do the onSwipe action - remove the story from feed
-		                	listAdapter.remove(listAdapter.getItem(position));
-		                	listAdapter.notifyDataSetChanged();
+		                	adapter.remove(notif);
+		                	adapter.notifyDataSetChanged();
 		                } else {
 		                    // do the onItemClick action
 		                	Log.i(logTag, "click detected");
 		                	// Launch fb url if fb notification
 		                	Notification notif = adapter.getItem(position);
-		                	if (notif.type == Notification.FACEBOOK_TYPE) {
+		                	if (notif.type == Notification.FACEBOOK_TYPE && notif.link != null) {
 		                		String url = notif.link;
+		                		System.out.println("Launching url: " + url);
 		                		Intent browserIntent = new Intent(Intent.ACTION_VIEW,
 		                				Uri.parse(url));
 		                		startActivity(browserIntent);
@@ -101,15 +116,20 @@ public class NewsFeedActivity extends Activity {
 		        public boolean onItemLongClick(AdapterView<?> parent, View view,int position, long id) {
 		            if (swipeDetector.swipeDetected()){
 		            	Log.i(logTag, "swipe detected");
-	                	// TODO Jin remove from db
-		                // do the onSwipe action - remove the story from feed
-		            	listAdapter.remove(listAdapter.getItem(position));
-	                	listAdapter.notifyDataSetChanged();
-		            	return true;
+		            	Notification notif = adapter.getItem(position);
+	                	NotificationDB db = new NotificationDB(NewsFeedActivity.this);
+	                	db.open();
+	                	db.deleteNotification(notif);
+	                	db.close();
+	                	
+	                    // do the onSwipe action - remove the story from feed
+	                	adapter.remove(notif);
+	                	adapter.notifyDataSetChanged();
+	                	return true;
 		            } else {
 		                // do the onItemLongClick action
 		            	Log.i(logTag, "long press detected");
-		            	return true;
+		            	return false;
 		            }
 		        }
 		    });
@@ -178,16 +198,16 @@ public class NewsFeedActivity extends Activity {
 	
 	class ContractAdapter extends ArrayAdapter<Notification> {
 
-		private Notification[] n;
+		private List<Notification> n;
 
-		public ContractAdapter(Context context, int view, Notification[] passedContracts) {
+		public ContractAdapter(Context context, int view, List<Notification> passedContracts) {
 		        super(context, view, passedContracts);
 		        n = passedContracts;
 		}
 
 		@Override
 		public int getCount() {
-		    return n.length;
+		    return n.size();
 		}
 
 		@Override
@@ -195,7 +215,7 @@ public class NewsFeedActivity extends Activity {
 		        View currentView = convertView;
 		        LayoutInflater currentViewInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		        currentView = currentViewInflater.inflate(R.layout.feed_row, null);
-		        Notification currentNotification = n[position];
+		        Notification currentNotification = n.get(position);
 
 		        if (currentNotification != null) {
 			        // Add info
@@ -234,9 +254,9 @@ public class NewsFeedActivity extends Activity {
 			        TextView time = (TextView)currentView.findViewById(R.id.row_footer_time);
 			        Date t = new Date(currentNotification.time); 
 			        if (t.getHours() > 12) 
-			        	time.setText(" @" + (t.getHours() - 12) + ":" + t.getMinutes() + "PM");
+			        	time.setText(" @ " + t.getMonth() + "/" + t.getDate() + " " + (t.getHours() - 12) + ":" + ((t.getMinutes() < 10) ? ("0" + t.getMinutes()) : t.getMinutes()) + "PM");
 			        else
-			        	time.setText(" @" + t.getHours() + ":" + t.getMinutes() + "AM");
+			        	time.setText(" @ " + t.getMonth() + "/" + t.getDate() + " " + t.getHours() + ":" + ((t.getMinutes() < 10) ? ("0" + t.getMinutes()) : t.getMinutes()) + "AM");
 			        
 			        System.out.println("Logging: source - " + currentNotification.sender + ", title - " + currentNotification.subject + 
 			        		", message - " + currentNotification.message + ", time - " + currentNotification.time);

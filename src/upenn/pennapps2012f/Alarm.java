@@ -34,9 +34,10 @@ public class Alarm extends BroadcastReceiver {
         	
         	NotificationDB nDb = new NotificationDB(context);
         	nDb.open();
+        	current.eventStartTime = System.currentTimeMillis();
         	nDb.addOccurredEvent(current);
         	nDb.close();
-
+        	
         	setAlarmHelper(context, current, false);
         }
         else {
