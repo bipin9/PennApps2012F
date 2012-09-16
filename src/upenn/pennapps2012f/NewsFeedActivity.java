@@ -4,7 +4,6 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,13 +58,14 @@ public class NewsFeedActivity extends Activity {
 
 		NotificationDB db = new NotificationDB(this.getApplicationContext());
 		db.open();
-		Object[] result = db.getAllNotifications();
+		Notification[] result = db.getAllNotifications();
 		db.close();
 		
 		if (result != null) {
-			Cursor c = (Cursor)result[0];
-			Notification[] n = (Notification[])result[1];
+			Notification[] n = result;
 
+			Log.w("NOTIFICATION", "Number of notification loaded is " + result.length);
+			
 			ArrayAdapter<Notification> adapter = new ContractAdapter(this, R.layout.feed_row, n);
 			listView.setAdapter(adapter);
 			
@@ -191,8 +191,12 @@ public class NewsFeedActivity extends Activity {
 			        // Add info
 			        TextView title = (TextView)currentView.findViewById(R.id.row_title);
 			        title.setText((currentNotification.subject == null) ? "" : currentNotification.subject);
+			        
 			        TextView body = (TextView)currentView.findViewById(R.id.row_text);
 			        body.setText((currentNotification.message == null) ? "" : currentNotification.message);
+			        if (currentNotification.message == null || currentNotification.message.equals("")) {
+			        	body.setVisibility(View.GONE);
+			        }
 			        
 			        ImageView image = (ImageView)currentView.findViewById(R.id.row_footer_icon);
 			        TextView from = (TextView)currentView.findViewById(R.id.row_footer_from_field);
@@ -223,6 +227,9 @@ public class NewsFeedActivity extends Activity {
 			        	time.setText(" @" + (t.getHours() - 12) + ":" + t.getMinutes() + "PM");
 			        else
 			        	time.setText(" @" + t.getHours() + ":" + t.getMinutes() + "AM");
+			        
+			        System.out.println("Logging: source - " + currentNotification.sender + ", title - " + currentNotification.subject + 
+			        		", message - " + currentNotification.message + ", time - " + currentNotification.time);
 		        }
 		        return currentView;
 		}

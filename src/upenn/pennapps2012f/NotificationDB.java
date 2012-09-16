@@ -23,7 +23,7 @@ public class NotificationDB {
 	private final static String NOTIFICATION_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + NOTIFICATION_TABLE + " (" +
 			"notificationId integer PRIMARY KEY AUTOINCREMENT," +
 			"notificationType integer NOT NULL," +
-			"notificationSubject char(300)," +
+			"notificationSubject char(300) NOT NULL," +
 			"notificationMessage char(500)," +
 			"notificationTime long NOT NULL," + 
 			"notificationSender char(100) NOT NULL," +
@@ -155,7 +155,10 @@ public class NotificationDB {
 	}
 	
 	public void addNotification(Notification n) {
+		System.out.println("Adding notification - name: " + n.subject + " sender: " + n.sender);
+		
 		ContentValues values = new ContentValues();
+		values.put("notificationSubject", n.subject);
 		values.put("notificationType", n.type);
 		values.put("notificationMessage", n.message);
 		values.put("notificationTime", n.time);
@@ -164,8 +167,8 @@ public class NotificationDB {
 		mDb.insert(NOTIFICATION_TABLE, null, values);
 	}
 	
-	public Object[] getAllNotifications() {
-		Cursor c = mDb.rawQuery("SELECT * FROM " + NOTIFICATION_TABLE, null);
+	public Notification[] getAllNotifications() {
+		Cursor c = mDb.rawQuery("SELECT * FROM " + NOTIFICATION_TABLE + " ORDER BY notificationTime", null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			Notification[] result = new Notification[c.getCount()];
@@ -174,6 +177,7 @@ public class NotificationDB {
 				Notification n = new Notification();
 				n.id = c.getInt(c.getColumnIndex("notificationId"));
 				n.type = c.getInt(c.getColumnIndex("notificationType"));
+				n.subject = c.getString(c.getColumnIndex("notificationSubject"));
 				n.message = c.getString(c.getColumnIndex("notificationMessage"));
 				n.time = c.getLong(c.getColumnIndex("notificationTime"));
 				n.sender = c.getString(c.getColumnIndex("notificationSender"));
@@ -181,7 +185,7 @@ public class NotificationDB {
 				result[index++] = n;
 			} while (c.moveToNext());
 			
-			return new Object[] { c, result };
+			return result;
 		}
 		return null;
 	}

@@ -77,7 +77,7 @@ public class DataRetrieval {
 		      		    String message = notification.getString("title");
 		      		    String link = notification.getString("link");
 		      		    long time = parseFBtime(date);
-		      		    Notification entry = new Notification(Notification.FACEBOOK_TYPE, (message == null) ? "" : message, "", link, time, from);
+		      		    Notification entry = new Notification(Notification.FACEBOOK_TYPE, message, "", link, time, from);
 		      		    result[i] = entry;
 		      	   }
 		      	   
