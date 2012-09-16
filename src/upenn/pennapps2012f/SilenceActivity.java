@@ -170,11 +170,11 @@ public class SilenceActivity extends Activity {
 			}
 		}.run();
 
-		// TESTING
-		EventsDB db = new EventsDB(this.getApplicationContext());
-		db.open();
-		db.initializeTestData();
-		db.close();
+//		// TESTING
+//		EventsDB db = new EventsDB(this.getApplicationContext());
+//		db.open();
+//		db.initializeTestData();
+//		db.close();
 	}
 
 	@Override

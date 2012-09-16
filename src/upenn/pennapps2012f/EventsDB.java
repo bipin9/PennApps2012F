@@ -86,34 +86,34 @@ public class EventsDB {
 	}
 	
 	// DEBUG ONLY
-	public void initializeTestData() {
-		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-		mDb.execSQL(TABLE_CREATE);
-
-		long curr = System.currentTimeMillis();
-		
-		ContentValues values = new ContentValues();
-		values.put("eventName", "TEST1");
-		values.put("eventStartTime", curr + 1000);
-		values.put("eventEndTime", curr + 10000);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-		
-
-		values = new ContentValues();
-		values.put("eventName", "TEST2");
-		values.put("eventStartTime", curr + 15000);
-		values.put("eventEndTime", curr + 20000);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-
-		values = new ContentValues();
-		values.put("eventName", "TEST3");
-		values.put("eventStartTime", curr + 21000);
-		values.put("eventEndTime", curr + 100000);
-		if (mDb.insert(TABLE_NAME, null, values) == -1) 
-			Log.w(TAG, "Failed to insert new course into table");
-	}
+//	public void initializeTestData() {
+//		mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+//		mDb.execSQL(TABLE_CREATE);
+//
+//		long curr = System.currentTimeMillis();
+//		
+//		ContentValues values = new ContentValues();
+//		values.put("eventName", "TEST1");
+//		values.put("eventStartTime", curr + 1000);
+//		values.put("eventEndTime", curr + 10000);
+//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+//			Log.w(TAG, "Failed to insert new course into table");
+//		
+//
+//		values = new ContentValues();
+//		values.put("eventName", "TEST2");
+//		values.put("eventStartTime", curr + 15000);
+//		values.put("eventEndTime", curr + 20000);
+//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+//			Log.w(TAG, "Failed to insert new course into table");
+//
+//		values = new ContentValues();
+//		values.put("eventName", "TEST3");
+//		values.put("eventStartTime", curr + 21000);
+//		values.put("eventEndTime", curr + 100000);
+//		if (mDb.insert(TABLE_NAME, null, values) == -1) 
+//			Log.w(TAG, "Failed to insert new course into table");
+//	}
 	
 	public void updateEntry(EventEntry[] newEntries) {
 		if (newEntries != null) {
