@@ -17,7 +17,7 @@ public class NotificationDB {
 	
 	private final static String TAG = "NOTIFICATION_DB";
 	private final static String DATABASE_NAME = "GCAL_FUTURE_EVENTS";
-	private final static int DATABASE_VERSION = 2;
+	private final static int DATABASE_VERSION = 1;
 	
 	private final static String NOTIFICATION_TABLE = "Notification_Table";
 	private final static String NOTIFICATION_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + NOTIFICATION_TABLE + " (" +
@@ -26,7 +26,8 @@ public class NotificationDB {
 			"notificationSubject char(300) NOT NULL," +
 			"notificationMessage char(500) NOT NULL," +
 			"notificationTime long NOT NULL," + 
-			"notificationSender char(100) NOT NULL)";
+			"notificationSender char(100) NOT NULL," +
+			"UNIQUE(notificationType, notificationSubject, notificationMessage, notificationTime, notificationSender) ON CONFLICT IGNORE)";
 	
 	private final static String OCCURRED_EVENTS_TABLE = "Occurred_Events_Table";
 	private final static String OCCURRED_EVENTS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + OCCURRED_EVENTS_TABLE + " (" +
@@ -145,6 +146,12 @@ public class NotificationDB {
 	
 	public void resetOccurredEvents() {
 		mDb.delete(OCCURRED_EVENTS_TABLE, null, null);
+	}
+
+	public void addNotification(Notification[] n) {
+		for (int i = 0; i < n.length; i++) {
+			addNotification(n[i]);
+		}
 	}
 	
 	public void addNotification(Notification n) {

@@ -33,9 +33,11 @@ import android.util.Log;
 public class DataRetrieval {
 
 	Facebook facebook;
+	Context mCtx;
+	
 	public DataRetrieval(Context context) {
 		facebook = ((BaseApplication)context.getApplicationContext()).getFacebook();
-		
+		mCtx = context;
 	}
 	
 	public long parseFBtime(String time)
@@ -57,12 +59,12 @@ public class DataRetrieval {
 		 mAsyncRunner.request("me/notifications", new RequestListener() {
       	   //called on successful completion of the Request
       	   public void onComplete(final String response, final Object state){
-      		   Notification[] notifications;
       		   Log.v("notifications",response);
       		   try {
 	      		   JSONObject jsonObjectResults = new JSONObject(response);
 	      		   JSONArray jsonNotificationDataArray = jsonObjectResults.getJSONArray("data");
-	      		   notifications = new Notification[jsonNotificationDataArray.length()];
+	      		   	      		   
+	      		   Notification[] result = new Notification[jsonNotificationDataArray.length()];
 		      	   for (int i=0;i<jsonNotificationDataArray.length();i++)
 		      	   {
 		      		    JSONObject notification = jsonNotificationDataArray.getJSONObject(i);
@@ -72,8 +74,13 @@ public class DataRetrieval {
 		      		    String link = notification.getString("link");
 		      		    long time = parseFBtime(date);
 		      		    Notification entry = new Notification(Notification.FACEBOOK_TYPE, message, null, link, time, from);
-		      		    notifications[i] = entry;
+		      		    result[i] = entry;
 		      	   }
+
+	      		   NotificationDB db = new NotificationDB(mCtx);
+	      		   db.open();
+	      		   db.addNotification(result);
+		      	   db.close();
       		   }
       		   catch (JSONException e) {}
       		   
@@ -137,6 +144,13 @@ public class DataRetrieval {
 					list.add(n);
 					
 				}
+				
+				// Add to DB
+				NotificationDB db = new NotificationDB(mCtx);
+				db.open();
+				db.addNotification((Notification[])list.toArray());
+				db.close();
+				
 		} catch (NoSuchProviderException e) {
 			e.printStackTrace();
 			

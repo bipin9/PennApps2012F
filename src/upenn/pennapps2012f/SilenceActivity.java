@@ -45,13 +45,6 @@ public class SilenceActivity extends Activity {
 			this.getIntent().removeExtra("GOTOFEED");
 			startActivity(new Intent(this, NewsFeedActivity.class));
 		}
-		
-		showNotification();
-
-		EventsDB db = new EventsDB(this.getApplicationContext());
-		db.open();
-		db.initializeTestData();
-		db.close();
 
 		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
 		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
@@ -155,6 +148,19 @@ public class SilenceActivity extends Activity {
 			}
 		};
 		signView.setOnTouchListener(gestureListener);
+		
+		new Runnable() {
+			public void run() 
+		    {
+				showNotification();
+		    }
+		}.run();
+		
+		// TESTING
+		EventsDB db = new EventsDB(this.getApplicationContext());
+		db.open();
+		db.initializeTestData();
+		db.close();
 	}
 	
 	@Override
