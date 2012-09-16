@@ -4,6 +4,8 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,7 +68,7 @@ public class NewsFeedActivity extends Activity {
 
 			Log.w("NOTIFICATION", "Number of notification loaded is " + result.length);
 			
-			ArrayAdapter<Notification> adapter = new ContractAdapter(this, R.layout.feed_row, n);
+			final ArrayAdapter<Notification> adapter = new ContractAdapter(this, R.layout.feed_row, n);
 			listView.setAdapter(adapter);
 			
 			// Set swipe detection for removing stories from feed
@@ -83,6 +85,14 @@ public class NewsFeedActivity extends Activity {
 		                } else {
 		                    // do the onItemClick action
 		                	Log.i(logTag, "click detected");
+		                	// Launch fb url if fb notification
+		                	Notification notif = adapter.getItem(position);
+		                	if (notif.type == Notification.FACEBOOK_TYPE) {
+		                		String url = notif.link;
+		                		Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+		                				Uri.parse(url));
+		                		startActivity(browserIntent);
+		                	}
 		                }
 		            }
 		    });
