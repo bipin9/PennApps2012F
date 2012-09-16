@@ -105,14 +105,6 @@ public class NewsFeedActivity extends Activity {
 		    });
 		}
 	}
-
-	/*
-	@Override
-	public void onBackPressed() {
-		Log.i("newsfeed", "ON BACK PRESSED");
-		startActivity(new Intent(this, SilenceActivity.class));
-	}
-	*/
 	
 	private class SwipeDetector implements View.OnTouchListener {
 

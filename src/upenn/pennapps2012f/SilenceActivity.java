@@ -158,14 +158,6 @@ public class SilenceActivity extends Activity {
 		db.initializeTestData();
 		db.close();
 	}
-	
-	/*
-	@Override
-	public void onBackPressed() {
-		Log.i("silenceActivity", "ON BACK PRESSED");
-		finish();
-	}
-	*/
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -179,7 +171,7 @@ public class SilenceActivity extends Activity {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 
 		int icon = R.drawable.feed_email;	// TODO CHANGE
-		CharSequence tickerText = "TICKER_TEXT?";
+		CharSequence tickerText = "Silence";
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, tickerText, when);
