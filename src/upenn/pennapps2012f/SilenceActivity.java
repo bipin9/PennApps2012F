@@ -37,6 +37,9 @@ public class SilenceActivity extends Activity {
 
 	public boolean DO_NOT_DISTURB = false;
 	private AnimationDrawable signAnimation;
+	
+	private SharedPreferences mPrefs;
+	private Facebook facebook;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -98,39 +101,54 @@ public class SilenceActivity extends Activity {
 			// TODO Charles
 			@Override
 			public void onClick(View v) {
-				final Facebook facebook = ((BaseApplication)getApplicationContext()).getFacebook();
-				final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-				String access_token = mPrefs.getString("access_token", null);
-				long expires = mPrefs.getLong("access_expires", 0);
-				if(access_token != null) {
-					facebook.setAccessToken(access_token);
-				}
-				if(expires != 0) {
-					facebook.setAccessExpires(expires);
-				}
+//				System.out.println("Starting facebook auth");
+//				facebook = ((BaseApplication)getApplicationContext()).getFacebook();
+//				System.out.println("Acquired facebook");
+//				mPrefs = getPreferences(MODE_PRIVATE);
+//				String access_token = mPrefs.getString("access_token", null);
+//				long expires = mPrefs.getLong("access_expires", 0);
+//				if(access_token != null) {
+//					System.out.println("Setting access token");
+//					facebook.setAccessToken(access_token);
+//				}
+//				if(expires != 0) {
+//					System.out.println("Setting access expires");
+//					facebook.setAccessExpires(expires);
+//				}
+//
+//				System.out.println("STEP");
+//				/*
+//				 * Only call authorize if the access_token has expired.
+//				 */
+//				if(!facebook.isSessionValid()) {
+//
+//					System.out.println("STEP1");
+//					
+//					facebook.authorize(SilenceActivity.this, new String[] {"manage_notifications"}, new DialogListener() {
+//						public void onComplete(Bundle values) {
+//							System.out.println("STEP2");
+//							
+//							SharedPreferences.Editor editor = mPrefs.edit();
+//							editor.putString("access_token", facebook.getAccessToken());
+//							editor.putLong("access_expires", facebook.getAccessExpires());
+//							editor.commit();
+//
+//						}
+//
+//						public void onFacebookError(FacebookError error) {
+//
+//							System.out.println("STEP FBERROR");
+//						}
+//
+//						public void onError(DialogError e) {
+//							System.out.println("STEP ERROR");}
+//
+//						public void onCancel() {
+//							System.out.println("STEP CANCEL");}
+//					});
+//				}
 
-				/*
-				 * Only call authorize if the access_token has expired.
-				 */
-				if(!facebook.isSessionValid()) {
-
-					facebook.authorize(SilenceActivity.this, new String[] {"manage_notifications"}, new DialogListener() {
-						public void onComplete(Bundle values) {
-							SharedPreferences.Editor editor = mPrefs.edit();
-							editor.putString("access_token", facebook.getAccessToken());
-							editor.putLong("access_expires", facebook.getAccessExpires());
-							editor.commit();
-
-						}
-
-						public void onFacebookError(FacebookError error) {}
-
-						public void onError(DialogError e) {}
-
-						public void onCancel() {}
-					});
-				}
-
+				startActivity(new Intent(SilenceActivity.this, FacebookAuthActivity.class));
 			}
 		});
 

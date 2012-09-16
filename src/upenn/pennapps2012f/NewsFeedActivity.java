@@ -195,42 +195,43 @@ public class NewsFeedActivity extends Activity {
 		        currentView = currentViewInflater.inflate(R.layout.feed_row, null);
 		        Notification currentNotification = n[position];
 
-		        // Add info
-		        TextView title = (TextView)findViewById(R.id.row_title);
-		        title.setText(currentNotification.subject);
-		        TextView body = (TextView)findViewById(R.id.row_text);
-		        body.setText(currentNotification.message);
-		        
-		        ImageView image = (ImageView)findViewById(R.id.row_footer_icon);
-		        TextView from = (TextView)findViewById(R.id.row_footer_from_field);
-		        switch (currentNotification.type) {
-		        case Notification.EMAIL_TYPE:
-		        	image.setBackgroundResource(R.drawable.feed_email);
-		        	from.setText("EMAIL FROM " + currentNotification.sender.toUpperCase());
-		        	break;
-		        case Notification.FACEBOOK_TYPE:
-		        	image.setBackgroundResource(R.drawable.feed_facebook);
-		        	from.setText("FACEBOOK NOTIFICATION FROM " + currentNotification.sender.toUpperCase());
-		        	break;
-		        case Notification.SMS_TYPE:
-		        	image.setBackgroundResource(R.drawable.feed_msg);
-		        	from.setText("SMS FROM " + currentNotification.sender.toUpperCase());
-		        	break;
-		        case Notification.TWITTER_TYPE:
-		        	image.setBackgroundResource(R.drawable.feed_msg);
-		        	from.setText("TWEET FROM " + currentNotification.sender.toUpperCase());
-		        	break;
-		        default:
-		        	break;
+		        if (currentNotification != null) {
+			        // Add info
+			        TextView title = (TextView)currentView.findViewById(R.id.row_title);
+			        title.setText((currentNotification.subject == null) ? "" : currentNotification.subject);
+			        TextView body = (TextView)currentView.findViewById(R.id.row_text);
+			        body.setText((currentNotification.message == null) ? "" : currentNotification.message);
+			        
+			        ImageView image = (ImageView)currentView.findViewById(R.id.row_footer_icon);
+			        TextView from = (TextView)currentView.findViewById(R.id.row_footer_from_field);
+			        switch (currentNotification.type) {
+			        case Notification.EMAIL_TYPE:
+			        	image.setBackgroundResource(R.drawable.feed_email);
+			        	from.setText("EMAIL FROM " + currentNotification.sender.toUpperCase());
+			        	break;
+			        case Notification.FACEBOOK_TYPE:
+			        	image.setBackgroundResource(R.drawable.feed_facebook);
+			        	from.setText("FACEBOOK NOTIFICATION FROM " + currentNotification.sender.toUpperCase());
+			        	break;
+			        case Notification.SMS_TYPE:
+			        	image.setBackgroundResource(R.drawable.feed_msg);
+			        	from.setText("SMS FROM " + currentNotification.sender.toUpperCase());
+			        	break;
+			        case Notification.TWITTER_TYPE:
+			        	image.setBackgroundResource(R.drawable.feed_msg);
+			        	from.setText("TWEET FROM " + currentNotification.sender.toUpperCase());
+			        	break;
+			        default:
+			        	break;
+			        }
+			        
+			        TextView time = (TextView)currentView.findViewById(R.id.row_footer_time);
+			        Date t = new Date(currentNotification.time); 
+			        if (t.getHours() > 12) 
+			        	time.setText(" @" + (t.getHours() - 12) + ":" + t.getMinutes() + "PM");
+			        else
+			        	time.setText(" @" + t.getHours() + ":" + t.getMinutes() + "AM");
 		        }
-		        
-		        TextView time = (TextView)findViewById(R.id.feed_header_silencetime);
-		        Date t = new Date(currentNotification.time);
-		        if (t.getHours() > 12) 
-		        	time.setText(" @" + (t.getHours() - 12) + ":" + t.getMinutes() + "PM");
-		        else
-		        	time.setText(" @" + t.getHours() + ":" + t.getMinutes() + "AM");
-		        
 		        return currentView;
 		}
 	}

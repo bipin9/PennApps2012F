@@ -23,8 +23,8 @@ public class NotificationDB {
 	private final static String NOTIFICATION_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + NOTIFICATION_TABLE + " (" +
 			"notificationId integer PRIMARY KEY AUTOINCREMENT," +
 			"notificationType integer NOT NULL," +
-			"notificationSubject char(300) NOT NULL," +
-			"notificationMessage char(500) NOT NULL," +
+			"notificationSubject char(300)," +
+			"notificationMessage char(500)," +
 			"notificationTime long NOT NULL," + 
 			"notificationSender char(100) NOT NULL," +
 			"UNIQUE(notificationType, notificationSubject, notificationMessage, notificationTime, notificationSender) ON CONFLICT IGNORE)";
