@@ -15,17 +15,21 @@ public class Notification {
 	public int id;
 	public int type;	// refer above
 	public String message;
+	public String subject;
 	public long time;
 	public String sender;
+	public String link;
 	
 	public Notification() {
 	}
 	
-	public Notification(int _id, int _type, String _message, long _time, String _sender) {
-		id = _id;
+	public Notification(int _type, String _subject, String _message, String _link, long _time, String _sender) {
+		
 		type = _type;
 		message = _message;
 		time = _time;
 		sender = _sender;
+		subject = _subject;
+		link = _link;
 	}
 }
