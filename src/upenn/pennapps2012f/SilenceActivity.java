@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -16,6 +17,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.ImageView;
+
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
 
 /**
  * Main activity that user interacts with.
@@ -35,6 +41,11 @@ public class SilenceActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Intent i = this.getIntent();
+		if (i.getBooleanExtra("GOTOFEED", false)) {
+			startActivity(new Intent(this, NewsFeedActivity.class));
+		}
+		
 		showNotification();
 
 		EventsDB db = new EventsDB(this.getApplicationContext());
@@ -64,7 +75,6 @@ public class SilenceActivity extends Activity {
 		// On click listener for tapping on sign
 		signView.setOnClickListener(new OnClickListener() {
 			// On silence sign click: switch to off if on and vice versa
-			@Override
 			public void onClick(View v) {
 				ImageView signView = (ImageView) findViewById(R.id.silenceSign);
 				if (DO_NOT_DISTURB) {
@@ -99,7 +109,39 @@ public class SilenceActivity extends Activity {
 			// TODO Charles
 			@Override
 			public void onClick(View v) {
-				
+				final Facebook facebook = ((BaseApplication)getApplicationContext()).getFacebook();
+				final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+		        String access_token = mPrefs.getString("access_token", null);
+		        long expires = mPrefs.getLong("access_expires", 0);
+		        if(access_token != null) {
+		            facebook.setAccessToken(access_token);
+		        }
+		        if(expires != 0) {
+		            facebook.setAccessExpires(expires);
+		        }
+		        
+		        /*
+		         * Only call authorize if the access_token has expired.
+		         */
+		        if(!facebook.isSessionValid()) {
+
+		            facebook.authorize(SilenceActivity.this, new String[] {"manage_notifications"}, new DialogListener() {
+		                public void onComplete(Bundle values) {
+		                    SharedPreferences.Editor editor = mPrefs.edit();
+		                    editor.putString("access_token", facebook.getAccessToken());
+		                    editor.putLong("access_expires", facebook.getAccessExpires());
+		                    editor.commit();
+		                   	                   
+		                }
+		    
+		                public void onFacebookError(FacebookError error) {}
+		    
+		                public void onError(DialogError e) {}
+		    
+		                public void onCancel() {}
+		            });
+		        }
+		        
 			}
 		});
 
@@ -114,6 +156,13 @@ public class SilenceActivity extends Activity {
 		};
 		signView.setOnTouchListener(gestureListener);
 	}
+	
+	@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        ((BaseApplication)this.getApplicationContext()).getFacebook().authorizeCallback(requestCode, resultCode, data);
+    }
 
 	private void showNotification() {
 		String ns = Context.NOTIFICATION_SERVICE;
@@ -130,7 +179,9 @@ public class SilenceActivity extends Activity {
 		Context context = getApplicationContext();
 		CharSequence contentTitle = "TITLE_TEXT?";
 		CharSequence contentText = "CONTENT_TEXT?";
-		Intent notificationIntent = new Intent(this, NewsFeedActivity.class);
+		Intent notificationIntent = new Intent(this, SilenceActivity.class);
+		notificationIntent.putExtra("GOTOFEED", true);
+		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
