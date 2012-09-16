@@ -90,9 +90,9 @@ public class SettingsActivity extends Activity {
 		// Populate list of upcoming calendar events to be silenced during
 		// TODO populate this from gcal
 		String[] events = new String[] {
-				"PennApps demos",
-				"Daily Pennsylvanian board meeting",
-				"CIS 121"
+				"PennApps demos, 2 - 5pm",
+				"Sleep, 5pm - 9/17 11am",
+				"CIS-552, 12 - 1:30pm"
 		};
 		ArrayList<String> eventsList = new ArrayList<String>();
 		eventsList.addAll(Arrays.asList(events));

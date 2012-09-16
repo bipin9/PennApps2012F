@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:paddingTop="35dp"
-            android:text="You enjoyed silence from 3-4 today"
             android:textColor="@android:color/white"
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -31,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/feed_header_silencetime"
             android:paddingLeft="20dp"
-            android:text="while you were in MKTG 101 and CIS 120"
             android:textColor="@android:color/white"
             android:textSize="16dp" />
     </RelativeLayout>
