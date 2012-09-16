@@ -217,10 +217,13 @@ public class Facebook {
 
         boolean singleSignOnStarted = false;
 
+        System.out.println("Starting facebook authorize");
+        
         mAuthDialogListener = listener;
 
         // fire off an auto-attribution publish if appropriate.
         autoPublishAsync(activity.getApplicationContext());
+        System.out.println("Starting facebook authorize 1");
 
         // Prefer single sign-on, where available.
         if (activityCode >= 0) {
@@ -1063,6 +1066,7 @@ public class Facebook {
         private final Context mApplicationContext;
 
         
+		@SuppressLint("NewApi")
 		public AutoPublishAsyncTask(String applicationId, Context context) {
             mApplicationId = applicationId;
             mApplicationContext = context.getApplicationContext();

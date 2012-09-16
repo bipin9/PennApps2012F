@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name="NewsFeedActivity" android:launchMode="singleInstance" />
-        
+		<activity android:name="FacebookAuthActivity" />
         <activity android:name="SettingsActivity" android:launchMode="singleInstance" />
 
         <receiver android:name="SMSReceiver" android:enabled="true">
