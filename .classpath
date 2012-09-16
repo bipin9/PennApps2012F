@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="C:/Users/Jin/Documents/Fall 2012/workspace/PennApps2012F/mail.jar"/>
+	<classpathentry kind="lib" path="/Users/hoconnie/Documents/PennApps2012F/mail.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
