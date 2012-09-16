@@ -20,13 +20,14 @@
         android:icon="@drawable/feed_email"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="SilenceActivity" >
+        <activity android:name="SilenceActivity" android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="NewsFeedActivity" />
+        <activity android:name="NewsFeedActivity" android:launchMode="singleInstance" />
+        <activity android:name="SettingsActivity" />
 
         <receiver android:name="SMSReceiver" android:enabled="true">
 			<intent-filter>

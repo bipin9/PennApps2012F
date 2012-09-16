@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -41,17 +42,12 @@ public class SilenceActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (this.getIntent().getBooleanExtra("GOTOFEED", false)) {
-			this.getIntent().removeExtra("GOTOFEED");
-			startActivity(new Intent(this, NewsFeedActivity.class));
-		}
-
-		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
-		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
-
 		// Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.silence_activity);
+
+		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
+		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
 
 		// Set sign based on if on silence mode or not
 		ImageView signView = (ImageView) findViewById(R.id.silenceSign);
@@ -85,7 +81,7 @@ public class SilenceActivity extends Activity {
 				}
 			}
 		});
-		
+
 		// On click listener for tapping on heart icon to go to settings
 		ImageView favIcon = (ImageView) findViewById(R.id.favorites_icon);
 		final Intent i = new Intent(this, SettingsActivity.class);
@@ -104,37 +100,37 @@ public class SilenceActivity extends Activity {
 			public void onClick(View v) {
 				final Facebook facebook = ((BaseApplication)getApplicationContext()).getFacebook();
 				final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-		        String access_token = mPrefs.getString("access_token", null);
-		        long expires = mPrefs.getLong("access_expires", 0);
-		        if(access_token != null) {
-		            facebook.setAccessToken(access_token);
-		        }
-		        if(expires != 0) {
-		            facebook.setAccessExpires(expires);
-		        }
-		        
-		        /*
-		         * Only call authorize if the access_token has expired.
-		         */
-		        if(!facebook.isSessionValid()) {
+				String access_token = mPrefs.getString("access_token", null);
+				long expires = mPrefs.getLong("access_expires", 0);
+				if(access_token != null) {
+					facebook.setAccessToken(access_token);
+				}
+				if(expires != 0) {
+					facebook.setAccessExpires(expires);
+				}
 
-		            facebook.authorize(SilenceActivity.this, new String[] {"manage_notifications"}, new DialogListener() {
-		                public void onComplete(Bundle values) {
-		                    SharedPreferences.Editor editor = mPrefs.edit();
-		                    editor.putString("access_token", facebook.getAccessToken());
-		                    editor.putLong("access_expires", facebook.getAccessExpires());
-		                    editor.commit();
-		                   	                   
-		                }
-		    
-		                public void onFacebookError(FacebookError error) {}
-		    
-		                public void onError(DialogError e) {}
-		    
-		                public void onCancel() {}
-		            });
-		        }
-		        
+				/*
+				 * Only call authorize if the access_token has expired.
+				 */
+				if(!facebook.isSessionValid()) {
+
+					facebook.authorize(SilenceActivity.this, new String[] {"manage_notifications"}, new DialogListener() {
+						public void onComplete(Bundle values) {
+							SharedPreferences.Editor editor = mPrefs.edit();
+							editor.putString("access_token", facebook.getAccessToken());
+							editor.putLong("access_expires", facebook.getAccessExpires());
+							editor.commit();
+
+						}
+
+						public void onFacebookError(FacebookError error) {}
+
+						public void onError(DialogError e) {}
+
+						public void onCancel() {}
+					});
+				}
+
 			}
 		});
 
@@ -148,14 +144,14 @@ public class SilenceActivity extends Activity {
 			}
 		};
 		signView.setOnTouchListener(gestureListener);
-		
+
 		new Runnable() {
 			public void run() 
-		    {
+			{
 				showNotification();
-		    }
+			}
 		}.run();
-		
+
 		// TESTING
 		EventsDB db = new EventsDB(this.getApplicationContext());
 		db.open();
@@ -163,12 +159,20 @@ public class SilenceActivity extends Activity {
 		db.close();
 	}
 	
+	/*
 	@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+	public void onBackPressed() {
+		Log.i("silenceActivity", "ON BACK PRESSED");
+		finish();
+	}
+	*/
 
-        ((BaseApplication)this.getApplicationContext()).getFacebook().authorizeCallback(requestCode, resultCode, data);
-    }
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		((BaseApplication)this.getApplicationContext()).getFacebook().authorizeCallback(requestCode, resultCode, data);
+	}
 
 	private void showNotification() {
 		String ns = Context.NOTIFICATION_SERVICE;
@@ -182,15 +186,15 @@ public class SilenceActivity extends Activity {
 
 		notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR; 
 
-		Context context = getApplicationContext();
-		CharSequence contentTitle = "TITLE_TEXT?";
-		CharSequence contentText = "CONTENT_TEXT?";
-		Intent notificationIntent = new Intent(this, SilenceActivity.class);
-		notificationIntent.putExtra("GOTOFEED", true);
 		
+		CharSequence contentTitle = "Silence";
+		CharSequence contentText = "See what you missed";
+		Intent notificationIntent = new Intent(this, NewsFeedActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+		notification.setLatestEventInfo(this, contentTitle, contentText, contentIntent);
 
 		System.out.println("Showing the notification");
 

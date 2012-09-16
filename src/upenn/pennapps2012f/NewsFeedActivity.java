@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -101,6 +102,14 @@ public class NewsFeedActivity extends Activity {
 	    });
 	}
 
+	/*
+	@Override
+	public void onBackPressed() {
+		Log.i("newsfeed", "ON BACK PRESSED");
+		startActivity(new Intent(this, SilenceActivity.class));
+	}
+	*/
+	
 	private class SwipeDetector implements View.OnTouchListener {
 
 		private static final int MIN_DISTANCE = 100;
