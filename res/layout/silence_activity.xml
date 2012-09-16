@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
         android:src="@drawable/silence_heart_icon" />
 
     <ImageView
