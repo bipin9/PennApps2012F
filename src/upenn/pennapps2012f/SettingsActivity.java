@@ -50,7 +50,6 @@ public class SettingsActivity extends Activity {
 				R.layout.settings_favorites_header,
 				favoritesListView, false);
 		favoritesListView.addHeaderView(favoritesHeader, null, false);
-		
 		View rulesHeader = inflater.inflate(
 				R.layout.settings_rules_header,
 				rulesListView, false);
@@ -66,9 +65,7 @@ public class SettingsActivity extends Activity {
 				"Amalia Hawkins",
 				"Charles Kong",
 				"Cynthia Mai",
-				"Jason Mow",
-				"Jeffrey Ho",
-				"Jinyan Cao"
+				"Jason Mow"
 		};
 		ArrayList<String> favoritesList = new ArrayList<String>();
 		favoritesList.addAll(Arrays.asList(favorites));
@@ -78,7 +75,7 @@ public class SettingsActivity extends Activity {
 		
 		// Populate list of rules
 		String[] rules = new String[] {
-				"Allow text messages if more than 3 are received from the " +
+				"Allow texts if more than 3 are received from the " +
 				"same person within 2 minutes",
 				"Allow phone calls if more than 1 are received from the " +
 				"same person within 2 minutes",
@@ -104,3 +101,4 @@ public class SettingsActivity extends Activity {
 		eventsListView.setAdapter(eventsListAdapter);
 	}
 }
+
