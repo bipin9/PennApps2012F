@@ -3,7 +3,7 @@
     android:id="@+id/silence_bg"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/silence_bg" >
+    android:background="#f4f4f4" >
 
     <ImageView
         android:id="@+id/favorites_icon"
