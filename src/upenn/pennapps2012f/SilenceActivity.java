@@ -8,8 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -19,10 +19,7 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.ImageView;
 
-import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
 
 /**
  * Main activity that user interacts with.
@@ -35,11 +32,13 @@ import com.facebook.android.FacebookError;
 public class SilenceActivity extends Activity {
 	public static final int SILENCE_ID = 100;
 
-	public boolean DO_NOT_DISTURB = false;
 	private AnimationDrawable signAnimation;
+	private ImageView signView;
 	
 	private SharedPreferences mPrefs;
 	private Facebook facebook;
+	
+	private boolean DO_NOT_DISTURB;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,15 +52,8 @@ public class SilenceActivity extends Activity {
 		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
 
 		// Set sign based on if on silence mode or not
-		ImageView signView = (ImageView) findViewById(R.id.silenceSign);
-
-		if (DO_NOT_DISTURB) {
-			// Show do not disturb
-			signView.setBackgroundResource(R.drawable.away_to_available_animation);
-		} else {
-			// Show available
-			signView.setBackgroundResource(R.drawable.available_to_away_animation);
-		}
+		signView = (ImageView) findViewById(R.id.silenceSign);
+		
 		signAnimation = (AnimationDrawable) signView.getBackground();
 
 		// On click listener for tapping on sign
@@ -69,15 +61,32 @@ public class SilenceActivity extends Activity {
 			// On silence sign click: switch to off if on and vice versa
 			public void onClick(View v) {
 				ImageView signView = (ImageView) findViewById(R.id.silenceSign);
+				
 				if (DO_NOT_DISTURB) {
 					// Set to available
 					DO_NOT_DISTURB = false;
+					
+					// Reset alarm
+					Context context = SilenceActivity.this.getApplicationContext();
+					new Alarm().cancelAlarm(context);
+
+		        	// reset for next event
+		        	((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+		        	
+		        	EventsDB db = new EventsDB(context);
+		        	db.open();
+		        	db.setCurrentEntry(null);
+		        	db.close();
+
 					signView.setBackgroundResource(R.drawable.away_to_available_animation);
 					signAnimation = (AnimationDrawable) signView.getBackground();
 					signAnimation.start();
 				} else {
 					// Set to do not disturb
 					DO_NOT_DISTURB = true;
+					
+					new Alarm().setAlarm(SilenceActivity.this.getApplicationContext());
+
 					signView.setBackgroundResource(R.drawable.available_to_away_animation);
 					signAnimation = (AnimationDrawable) signView.getBackground();
 					signAnimation.start();
@@ -175,6 +184,29 @@ public class SilenceActivity extends Activity {
 //		db.open();
 //		db.initializeTestData();
 //		db.close();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		// Set sign based on if on silence mode or not
+		EventsDB db = new EventsDB(SilenceActivity.this.getApplicationContext());
+    	db.open();
+    	EventEntry entry = db.getCurrentEntry();
+    	db.close();
+    	
+		if (entry != null) {
+			// Show do not disturb
+			System.out.println("Setting sign to DO NOT DISTURB");
+			DO_NOT_DISTURB = true;
+			signView.setBackgroundResource(R.drawable.away_to_available_animation);
+		} else {
+			// Show available
+			System.out.println("Setting sign to AVAILABLE");
+			DO_NOT_DISTURB = false;
+			signView.setBackgroundResource(R.drawable.available_to_away_animation);
+		}
 	}
 
 	@Override
