@@ -41,6 +41,10 @@ public class SilenceActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Remove title bar
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.silence_activity);
+
 		if (this.getIntent().getBooleanExtra("GOTOFEED", false)) {
 			this.getIntent().removeExtra("GOTOFEED");
 			startActivity(new Intent(this, NewsFeedActivity.class));
@@ -48,10 +52,6 @@ public class SilenceActivity extends Activity {
 
 		new AsyncLoadCalendars(this.getApplicationContext()).execute(this.getContentResolver());
 		new LoadCalendarAlarm().setAlarm(this.getApplicationContext());
-
-		// Remove title bar
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.silence_activity);
 
 		// Set sign based on if on silence mode or not
 		ImageView signView = (ImageView) findViewById(R.id.silenceSign);

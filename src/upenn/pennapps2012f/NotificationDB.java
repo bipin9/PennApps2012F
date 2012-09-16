@@ -164,7 +164,7 @@ public class NotificationDB {
 		mDb.insert(NOTIFICATION_TABLE, null, values);
 	}
 	
-	public Notification[] getAllNotifications() {
+	public Object[] getAllNotifications() {
 		Cursor c = mDb.rawQuery("SELECT * FROM " + NOTIFICATION_TABLE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
@@ -181,7 +181,7 @@ public class NotificationDB {
 				result[index++] = n;
 			} while (c.moveToNext());
 			
-			return result;
+			return new Object[] { c, result };
 		}
 		return null;
 	}

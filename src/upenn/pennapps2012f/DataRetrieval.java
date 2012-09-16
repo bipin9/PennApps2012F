@@ -36,7 +36,9 @@ public class DataRetrieval {
 	Context mCtx;
 	
 	public DataRetrieval(Context context) {
-		facebook = ((BaseApplication)context.getApplicationContext()).getFacebook();
+		System.out.println("Initiating DataRetrieval object");
+		facebook = ((BaseApplication)context).getFacebook();
+		System.out.println("Got facebook object");
 		mCtx = context;
 	}
 	
